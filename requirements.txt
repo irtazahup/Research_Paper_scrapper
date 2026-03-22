@@ -2,3 +2,5 @@ arxiv
 psycopg2-binary 
 python-dotenv
 groq
+fastapi
+uvicorn
