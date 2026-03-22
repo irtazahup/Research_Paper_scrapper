@@ -1,5 +1,6 @@
 import arxiv
 import datetime
+from db_ingestion import save_papers_to_db
 
 def fetch_recent_ai_papers(hours_back=96): # Changed to 96 hours to bypass the weekend gap
     client = arxiv.Client()
@@ -23,7 +24,9 @@ def fetch_recent_ai_papers(hours_back=96): # Changed to 96 hours to bypass the w
             new_papers.append({
                 "title": result.title,
                 "published": result.published,
-                "id": result.entry_id.split('/')[-1]
+                "id": result.entry_id.split('/')[-1],
+                "summary": result.summary,
+                "pdf_url": result.pdf_url
             })
         else:
             break
@@ -34,4 +37,8 @@ if __name__ == "__main__":
     papers = fetch_recent_ai_papers(96)
     print(f"Found {len(papers)} papers.")
     for p in papers[:3]: # Show first 3 for verification
-        print(f"[{p['published']}] {p['title']}")
+        print(f"[{p['published']}] {p['title']} {p['pdf_url']}")
+    
+    if papers:
+        save_papers_to_db(papers)
+        
