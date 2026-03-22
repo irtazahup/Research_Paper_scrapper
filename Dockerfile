@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -6,7 +6,11 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy everything into the container
+# Copy all project files
 COPY . .
 
-# Note: No CMD here, as docker-compose handles the specific commands above
+# Expose the FastAPI port
+EXPOSE 8000
+
+# Command to run the API (Standard Production Server)
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
