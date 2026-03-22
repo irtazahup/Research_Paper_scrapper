@@ -1,6 +1,8 @@
 from fetch import fetch_recent_ai_papers, get_latest_timestamp
 from db_ingestion import save_papers_to_db
 from tagging import enrich_metadata
+import time
+
 
 def run_pipeline():
     print("--- 🚀 Starting MLOps Pipeline ---")
@@ -24,4 +26,13 @@ def run_pipeline():
     print("--- ✅ Pipeline Completed ---")
 
 if __name__ == "__main__":
-    run_pipeline()
+    SIX_HOURS = 6 * 60 * 60  # seconds
+    while True:
+        try:
+            run_pipeline()
+        except Exception as e:
+            print(f"❌ Pipeline failed: {e}")
+        
+        print(f"💤 Sleeping for 6 hours...")
+        time.sleep(SIX_HOURS)
+    
