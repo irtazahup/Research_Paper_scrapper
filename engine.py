@@ -1,4 +1,3 @@
-import time
 from fetch import fetch_recent_ai_papers, get_latest_timestamp
 from db_ingestion import save_papers_to_db
 from tagging import enrich_metadata
