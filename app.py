@@ -1,6 +1,8 @@
 import streamlit as st
 import requests
 import pandas as pd
+import os
+from dotenv import load_dotenv
 
 st.set_page_config(page_title="AI Research Tracker", layout="wide")
 
@@ -10,7 +12,7 @@ st.title("🤖 Agentic Research Paper Tracker")
 view = st.sidebar.radio("Navigate", ["Browse Papers", "View Statistics"])
 
 # Define Base URL
-BASE_URL = "http://13.61.9.182:8000"
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")  # Default to localhost if not set
 
 if view == "Browse Papers":
     st.header("Latest Research Papers")
