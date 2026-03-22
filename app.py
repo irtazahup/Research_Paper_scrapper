@@ -10,7 +10,7 @@ st.title("🤖 Agentic Research Paper Tracker")
 view = st.sidebar.radio("Navigate", ["Browse Papers", "View Statistics"])
 
 # Define Base URL
-BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = "http://13.61.9.182:8000"
 
 if view == "Browse Papers":
     st.header("Latest Research Papers")
