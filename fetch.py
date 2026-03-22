@@ -1,8 +1,29 @@
+import os
+
 import arxiv
 import datetime
+
+import psycopg2
 from db_ingestion import save_papers_to_db
 
-def fetch_recent_ai_papers(hours_back=96): # Changed to 96 hours to bypass the weekend gap
+
+
+def get_latest_timestamp():
+    conn = psycopg2.connect(os.getenv("CONNECTION_STRING"))
+    cur = conn.cursor()
+    cur.execute("SELECT MAX(published_at) FROM papers")
+    result = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+    # If DB is empty, default to 96h; otherwise, use the last paper's date
+    return result if result else (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=96))
+
+# Then in your fetch function:
+threshold = get_latest_timestamp()
+# Now it only fetches papers published AFTER the last one in your DB.
+
+
+def fetch_recent_ai_papers(dayToFetchFrom): # Changed to 96 hours to bypass the weekend gap
     client = arxiv.Client()
 
     # Search for AI (cs.AI) or Machine Learning (cs.LG)
@@ -13,10 +34,10 @@ def fetch_recent_ai_papers(hours_back=96): # Changed to 96 hours to bypass the w
     )
 
     now = datetime.datetime.now(datetime.timezone.utc)
-    threshold = now - datetime.timedelta(hours=hours_back)
+    threshold = dayToFetchFrom
     
     new_papers = []
-    print(f"--- Checking for papers since {threshold} (Last {hours_back}h) ---")
+    print(f"--- Checking for papers since {threshold} ")
 
     for result in client.results(search):
         # ArXiv 'published' date is when the version was first submitted
